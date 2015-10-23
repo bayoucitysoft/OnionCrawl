@@ -21,27 +21,14 @@ namespace OnionCrawl.Objects
         public int CrawlDepth { get; set; }
 
         private byte[] _screenshot;
-        public byte[] screenshot
-        {
-            get
-            {
-                if (Screenshot != null)
-                    using (MemoryStream ms = new MemoryStream())
-                    {
-                        Screenshot.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                        return ms.ToArray();
-                    }
-                else return new byte[0];
-            }
-            set { _screenshot = value; }
-
-        }
+        public byte[] screenshot { get; set; }
         /// <summary>
         /// finish initializing this 
         /// </summary>
         private Image screenshotImage;
         public Image Screenshot { get; set; }
 
+        public long ParentId { get; set; }
         public ScanObject Parent { get; set; }
 
         public ScanObject()
@@ -80,6 +67,20 @@ namespace OnionCrawl.Objects
             else return new ScanObject();
         }
 
-
+        public  void Update()
+        {
+            SQLAccess db = new SQLAccess();
+            db.Procedure = "UpdateScanObject";
+            db.Parameters.Add(@"@id", Id);
+            db.Parameters.Add(@"@name", Name);
+            db.Parameters.Add(@"@description", Description);
+            db.Parameters.Add(@"@url", Url);
+            db.Parameters.Add(@"@page_status", PageStatus);
+            db.Parameters.Add(@"@page_source", PageSource);
+            db.Parameters.Add(@"@crawl_depth", CrawlDepth);
+            db.Parameters.Add(@"@screenshot", screenshot);
+            db.Parameters.Add(@"@parent_id", ParentId);
+            db.ExecuteProcedure();
+        }
     }
 }

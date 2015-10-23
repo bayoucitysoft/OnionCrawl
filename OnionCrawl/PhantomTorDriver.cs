@@ -14,7 +14,8 @@ namespace OnionCrawl
     public class PhantomTorDriver
     {
         public Process Tor { get; set; }
-        string torPath = @"C:\Users\Pax Prose\Desktop\Tor Browser\Browser\firefox.exe";
+        //string torPath = @"C:\Users\Pax Prose\Desktop\Tor Browser\Browser\firefox.exe";
+        string torPath = @"C:\Users\dtsadmin\Desktop\Tor Browser\Browser\firefox.exe";
         PhantomJSDriverService Service { get; set; }
         public PhantomJSDriver Driver { get; set; }
         public bool TorRunning { get { return CheckForTorProcess(); } }
@@ -37,8 +38,8 @@ namespace OnionCrawl
             }
 
             Driver.Navigate().GoToUrl(@"https://check.torproject.org");
-            File.WriteAllLines(@"C:\test_dump.txt", new string[] { Driver.PageSource });
-            Driver.GetScreenshot().SaveAsFile(@"C:\check.png", ImageFormat.Png);
+            File.WriteAllLines(@"Y:\test_dump.txt", new string[] { Driver.PageSource });
+            Driver.GetScreenshot().SaveAsFile(@"Y:\check.png", ImageFormat.Png);
 
         }
 
@@ -61,6 +62,11 @@ namespace OnionCrawl
         private bool CheckForTorProcess()
         {
             return Process.GetProcesses().Any(x => x.ProcessName == "tor");
+        }
+
+        internal void Kill()
+        {
+            this.Driver.Close();
         }
     }
 }

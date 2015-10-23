@@ -10,7 +10,8 @@ namespace OnionCrawl.Utility
 {
     public class SQLAccess
     {
-        public static string connString = @"Data Source=NORMANDY\SR71;Initial Catalog=torcrawl;User ID=caleb;Password=caleb;Integrated Security=False;";
+        //public static string connString = @"Data Source=NORMANDY\SR71;Initial Catalog=torcrawl;User ID=caleb;Password=caleb;Integrated Security=False;";
+        public static string connString = @"Data Source=localhost;Initial Catalog=torcrawl;User ID=caleb;Password=caleb;Integrated Security=False;";
         public string Procedure { get; set; }
         public Dictionary<string, object> Parameters { get; set; }
         public bool Success { get; set; }
@@ -25,21 +26,17 @@ namespace OnionCrawl.Utility
             Procedure = string.Empty;
         }
 
-        public static class ErrorLog
+        public class ErrorLog
         {
-            public static string PublicMessage { get; set; }
-            internal static string ErrorHeader { get; set; }
-            internal static string PrivateMessage { get; set; }
-            internal static DateTime TimeStamp { get; set; }
-            internal static Guid Guid { get; set; }
+            public string PublicMessage { get; set; }
+            internal string ErrorHeader { get; set; }
+            internal string PrivateMessage { get; set; }
+            internal DateTime TimeStamp { get; set; }
+            internal Guid Guid { get; set; }
+            public Guid ItemGuid { get; set; }
         }
 
-        private static void SetError(Guid guid, string proc)
-        {
-            ErrorLog.Guid = guid;
-            ErrorLog.TimeStamp = DateTime.Now;
-            ErrorLog.ErrorHeader = @"Error Inserting " + proc;
-        }
+
         internal void ExecuteProcedure()
         {
             Response = new DataTable();

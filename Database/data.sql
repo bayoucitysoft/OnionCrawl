@@ -19,5 +19,9 @@ go
 
 
 
-
+select * from NarrativeObject
+select * from NarrativeMessage
 select * from ScanObject
+
+truncate table NarrativeMessage
+truncate table NarrativeObject

@@ -11,7 +11,7 @@ namespace OnionCrawl.Objects
     {
         public long Id { get; set; }
         public string Contents { get; set; }
-        public DateTime Create { get; set; }
+        public DateTime Created { get; set; }
 
         public Guid Guid { get; set; }
         public long NarrativeId { get; set; }
@@ -19,23 +19,23 @@ namespace OnionCrawl.Objects
 
         public Message(long narrativeId, bool error, string contents)
         {
-            Create = DateTime.Now;
+            Created = DateTime.Now;
             Guid = Guid.NewGuid();
             NarrativeId = narrativeId;
             HasErrors = error;
             Contents = contents;
         }
 
-        internal void UploadNarrativeStep()
+        internal void UploadNarrativeMessage()
         {
             SQLAccess db = new SQLAccess();
-            db.Procedure = "UploadNarrativeStep";
+            db.Procedure = "InsertNarrativeMessage";
             db.Parameters.Add(@"@contents", Contents);
-            db.Parameters.Add(@"@create", Create);
-            db.Parameters.Add(@"@guid", Guid);
-            db.Parameters.Add(@"@narrative_id", NarrativeId);
+            db.Parameters.Add(@"@created", Created);
+            db.Parameters.Add(@"@guid", Guid);          
             db.Parameters.Add(@"@errors", HasErrors);
-            //db.ExecuteProcedure();
+            db.Parameters.Add(@"@narrative_id", NarrativeId);
+            db.ExecuteProcedure();
         }
     }
 }
