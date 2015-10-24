@@ -30,10 +30,11 @@ namespace OnionCrawl.Objects
 
         public long ParentId { get; set; }
         public ScanObject Parent { get; set; }
+        public Guid Guid { get; set; }
 
         public ScanObject()
         {
-
+            Guid = Guid.NewGuid();
         }
 
         public ScanObject(DataRow r)
@@ -50,10 +51,23 @@ namespace OnionCrawl.Objects
                 PageStatus = (string)r["page_status"];
             if (!DBNull.Value.Equals(r["page_source"]))
                 PageSource = (string)r["page_source"];
+            if (!DBNull.Value.Equals(r["crawl_depth"]))
+                CrawlDepth = (int)r["crawl_depth"];
             if (!DBNull.Value.Equals(r["screenshot"]))
                 screenshot = (byte[])(r["screenshot"]);
             if (!DBNull.Value.Equals(r["parent_id"]))
-                Parent = new ScanObject().FindById((long)r["parent_id"]);
+                ParentId = (long)r["parent_id"];
+            if (!DBNull.Value.Equals(r["guid"]))
+                Guid = (System.Guid)r["guid"];
+        }
+
+        public ScanObject(string name, string url, long parentId, int crawldepth)
+        {
+            Name = name;
+            Url = url;
+            ParentId = parentId;
+            CrawlDepth = crawldepth;
+            Guid = Guid.NewGuid();
         }
 
         public ScanObject FindById(long id)
@@ -67,7 +81,17 @@ namespace OnionCrawl.Objects
             else return new ScanObject();
         }
 
-        public  void Update()
+            internal ScanObject GetNext()
+        {
+            SQLAccess db = new SQLAccess();
+            db.Procedure = "NextScanObject";
+            db.ExecuteProcedure();
+            if (db.HasData)
+                return new ScanObject(db.Response.Rows[0]);
+            else return new ScanObject();
+        }
+
+        public void Update()
         {
             SQLAccess db = new SQLAccess();
             db.Procedure = "UpdateScanObject";
@@ -78,9 +102,27 @@ namespace OnionCrawl.Objects
             db.Parameters.Add(@"@page_status", PageStatus);
             db.Parameters.Add(@"@page_source", PageSource);
             db.Parameters.Add(@"@crawl_depth", CrawlDepth);
-            db.Parameters.Add(@"@screenshot", screenshot);
+            //db.Parameters.Add(@"@screenshot", screenshot);
             db.Parameters.Add(@"@parent_id", ParentId);
             db.ExecuteProcedure();
         }
+
+        internal void Insert()
+        {
+            SQLAccess db = new SQLAccess();
+            db.Procedure = "InsertScanObject";
+            db.Parameters.Add(@"@name", Name);
+            db.Parameters.Add(@"@description", Description);
+            db.Parameters.Add(@"@url", Url);
+            db.Parameters.Add(@"@page_status", PageStatus);
+            db.Parameters.Add(@"@page_source", PageSource);
+            db.Parameters.Add(@"@crawl_depth", CrawlDepth);
+            db.Parameters.Add(@"@screenshot", screenshot);
+            db.Parameters.Add(@"@parent_id", ParentId);
+            db.Parameters.Add(@"@guid", Guid);
+            db.ExecuteProcedure();
+        }
+
+    
     }
 }

@@ -13,7 +13,8 @@ create table ScanObject
 	page_source nvarchar(max), 
 	crawl_depth int, 
 	screenshot binary,
-	parent_id bigint 
+	parent_id bigint,
+	guid uniqueidentifier
 )
 go
 if exists(select * from sys.objects where name = 'NarrativeObject')

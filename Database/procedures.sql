@@ -17,7 +17,8 @@ begin
 	page_source,
 	crawl_depth,
 	screenshot,
-	parent_id
+	parent_id,
+	guid
 	from ScanObject 
 	where Id = @id 
 end
@@ -40,9 +41,54 @@ begin
 	page_source,
 	crawl_depth,
 	screenshot,
-	parent_id
+	parent_id,
+	guid
 	from ScanObject 
 	where Url = @url
+end
+go
+if exists(select * from sys.objects where name = 'InsertScanObject')
+drop procedure InsertScanObject
+go
+create procedure InsertScanObject 
+(
+	@name nvarchar(256),
+	@description nvarchar(max) = null,
+	@url nvarchar(max),
+	@page_status nvarchar(max) = null,
+	@page_source nvarchar(max) = null,
+	@crawl_depth int = null,
+	@screenshot binary = null,
+	@parent_id bigint = null,
+	@guid uniqueidentifier = null
+)
+as
+begin
+	if (select count(*) from ScanObject where Url = @url) = 0
+	begin 
+		insert into ScanObject
+		(
+			name,
+			description,
+			url,
+			page_status,
+			page_source,
+			crawl_depth,
+			screenshot,
+			parent_id,
+			guid
+		)
+		select 
+		@name,
+		@description,
+		@url,
+		@page_status,
+		@page_source,
+		@crawl_depth,
+		@screenshot,
+		@parent_id,
+		@guid
+	end 
 end
 go
 if exists(select * from sys.objects where name = 'UpdateScanObject')
@@ -52,13 +98,13 @@ create procedure UpdateScanObject
 (
 	@id bigint,
 	@name nvarchar(256),
-	@description nvarchar(max),
+	@description nvarchar(max) = null,
 	@url nvarchar(max),
-	@page_status nvarchar(max),
-	@page_source nvarchar(max),
-	@crawl_depth int,
-	@screenshot binary,
-	@parent_id bigint 
+	@page_status nvarchar(max) = null,
+	@page_source nvarchar(max) = null,
+	@crawl_depth int = null,
+	@screenshot binary = null,
+	@parent_id bigint = null 
 )
 as
 begin 
@@ -74,8 +120,8 @@ begin
 	where Id = @id 
 end 
 go
-if exists(select * from sys.objects where name = 'InsertNarrative')
-drop procedure InsertNarrative 
+if exists(select * from sys.objects where name = 'InsertNarrativeObject')
+drop procedure InsertNarrativeObject
 go
 create procedure InsertNarrativeObject
 (
@@ -146,4 +192,31 @@ begin
 	@errors,
 	@narrative_id
 end 
+go
+if exists(select * from sys.objects where name = 'NextScanObject')
+drop procedure NextScanObject
+go
+create procedure NextScanObject
+as
+begin
+declare @id bigint = (	select top 1 id 
+						from ScanObject 
+						where page_status is null and 
+						substring(url, 8, 22) not in (select distinct substring(url, 8, 22) from ScanObject where page_status = 'PROCESSING')
+						order by id)
+	select top 1 
+	id,
+	name,
+	description,
+	url,
+	page_status,
+	page_source,
+	crawl_depth,
+	screenshot,
+	parent_id,
+	guid
+	from ScanObject with(nolock)
+	where id = @id 
+update ScanObject set page_status = 'PROCESSING' where id = @id
+end
 go

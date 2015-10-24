@@ -10,8 +10,8 @@ namespace OnionCrawl.Utility
 {
     public class SQLAccess
     {
-        //public static string connString = @"Data Source=NORMANDY\SR71;Initial Catalog=torcrawl;User ID=caleb;Password=caleb;Integrated Security=False;";
-        public static string connString = @"Data Source=localhost;Initial Catalog=torcrawl;User ID=caleb;Password=caleb;Integrated Security=False;";
+        public static string connString = @"Data Source=NORMANDY\SR71;Initial Catalog=torcrawl;User ID=caleb;Password=caleb;Integrated Security=False;";
+        //public static string connString = @"Data Source=localhost;Initial Catalog=torcrawl;User ID=caleb;Password=caleb;Integrated Security=False;";
         public string Procedure { get; set; }
         public Dictionary<string, object> Parameters { get; set; }
         public bool Success { get; set; }

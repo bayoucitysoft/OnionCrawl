@@ -52,7 +52,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Objects\LinkFinder.cs" />
     <Compile Include="Objects\Message.cs" />
     <Compile Include="Objects\NarrativeObject.cs" />
     <Compile Include="Objects\ScanObject.cs" />
