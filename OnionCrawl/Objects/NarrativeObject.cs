@@ -147,7 +147,9 @@ namespace OnionCrawl.Objects
                     && !driver.PageSource.Contains("Congratulations. This browser is configured to use Tor.")
                     && !driver.PageSource.Contains("reddit404a.png")
                     && !driver.PageSource.Contains("403 Forbidden")
-                    && !driver.PageSource.Contains("404 Not Found"))
+                    && !driver.PageSource.Contains("404 Not Found")
+                    && !driver.PageSource.Contains("Page not found")
+                    && !driver.PageSource.Contains("elgg-state-error"))
                 {
                     //temporary until I can figure how the f* to get the bytearray to write to a stream
                     driver.GetScreenshot().SaveAsFile(String.Format(@"C:\torimages\x{0}.tiff", guid.ToString()), System.Drawing.Imaging.ImageFormat.Tiff);

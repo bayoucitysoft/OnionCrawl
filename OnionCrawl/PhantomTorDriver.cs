@@ -23,20 +23,26 @@ namespace OnionCrawl
 
         public PhantomTorDriver(string port)
         {
-
-            StartTorProcess();
-            PhantomJSOptions options = new PhantomJSOptions();
-            Proxy proxy = new Proxy();
-            proxy.SocksProxy = string.Format("127.0.0.1:" + port);
-            Service = PhantomJSDriverService.CreateDefaultService();
-            Service.ProxyType = "socks5";
-            Service.Proxy = proxy.SocksProxy;
-            Service.HideCommandPromptWindow = true;
-            Driver = new PhantomJSDriver(Service);
-            
-            while (!TorRunning)
+            try
             {
-                Task.Delay(2000);
+                StartTorProcess();
+                PhantomJSOptions options = new PhantomJSOptions();
+                Proxy proxy = new Proxy();
+                proxy.SocksProxy = string.Format("127.0.0.1:" + port);
+                Service = PhantomJSDriverService.CreateDefaultService();
+                Service.ProxyType = "socks5";
+                Service.Proxy = proxy.SocksProxy;
+                Service.HideCommandPromptWindow = true;
+                Driver = new PhantomJSDriver(Service);
+
+                while (!TorRunning)
+                {
+                    Task.Delay(2000);
+                }
+            }
+            catch
+            {
+
             }
         }
 

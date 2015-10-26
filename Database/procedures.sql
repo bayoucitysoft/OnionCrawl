@@ -220,3 +220,6 @@ declare @id bigint = (	select top 1 id
 update ScanObject set page_status = 'PROCESSING' where id = @id
 end
 go
+
+
+

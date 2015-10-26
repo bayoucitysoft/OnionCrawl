@@ -17,23 +17,14 @@ namespace OnionCrawl
             try
             {
                 Task<bool> run1 = StartNewAsyncScan("9150");
-                Task.Delay(600);
-                Task<bool> run2 = StartNewAsyncScan("9151");
-                Task.Delay(600);
-                Task<bool> run3 = StartNewAsyncScan("9152");
-                Task.Delay(600);
-                Task<bool> run4 = StartNewAsyncScan("9153");
-                Task.Delay(600);
-                if (run1.Result == false | run2.Result == false | run3.Result == false | run4.Result == false)
-                {
-                    Task.Delay(10000);
-                }
+                while (!run1.Result)
+                    Task.Delay(1000);
                 Main(new string[] { });
             }
             catch
             {
-                Process restart = new Process();
-                
+                GC.WaitForPendingFinalizers();
+                Main(new string[] { });
             }
         }
 

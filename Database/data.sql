@@ -16,10 +16,3 @@ values
 null, '', 0, null, null)
 go
 
-
-
-
-
-
---truncate table NarrativeMessage
---truncate table NarrativeObject
